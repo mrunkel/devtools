@@ -1,0 +1,52 @@
+version: '3.1'
+
+# this docker compose file creates the various services used across all dev platforms at plusForta, including
+# * traefik
+# * memcached
+# * redis
+# * mailhog
+# * mysql
+services:
+
+  memcached:
+    image: memcached:alpine
+    container_name: kirby-memcached
+    networks:
+      - internal
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: kirby-mailhog
+    ports:
+      - "8025:8025"
+    networks:
+      - internal
+
+  traefik:
+    image: traefik:latest
+    restart: always
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
+      AWS_HOSTED_ZONE_ID: ${AWS_ZONE_ID}
+      AWS_REGION: "eu-central-1"
+    ports:
+      - 80:80
+      - 443:443
+      - 8082:8082
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/traefik.toml:/traefik.toml
+      - acmedata:/acme
+    container_name: traefik
+    networks:
+      - web
+volumes:
+  acmedata:
+networks:
+  web: # defines the network used to connect to traefik in another container
+    external:
+      name: web
+  internal: # defines the network used to connect to all services
+      external:
+        name: internal
