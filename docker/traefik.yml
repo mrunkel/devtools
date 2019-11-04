@@ -1,0 +1,37 @@
+## traefik.yml for v2
+
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: true
+
+entrypoints:
+  web:
+    address: 80
+  websecure:
+    address: 443
+# Docker configuration backend
+providers:
+  docker:
+    exposedbydefault: false
+    watch: true
+    endpoint: unix:///var/run/docker.sock
+    network: web
+# API and dashboard configuration
+api:
+  insecure: true
+  dashboard: true
+  debug: true
+log:
+  level: ERROR
+certificatesResolvers:
+  default:
+    acme:
+      email: admin@kautionsfrei.de
+      # Use the staging server for testing, remove when ready
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      storage: acme.json
+      dnsChallege:
+        provider: route53
+        # Needs the following ENVIROMENT VARIABLES: AWS_ACCESS_KEY_ID,
+        # AWS_SECRET_ACCESS_KEY, [AWS_REGION], [AWS_HOSTED_ZONE_ID]
+        # or a configured user/instance IAM profile.

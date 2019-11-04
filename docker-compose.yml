@@ -1,30 +1,48 @@
-version: '3.1'
+version: '3.5'
 
 # this docker compose file creates the various services used across all dev platforms at plusForta, including
-# * traefik
+# * traefik (w/Jaeger)
 # * memcached
 # * redis
 # * mailhog
 # * mysql
 services:
-
   memcached:
+    container_name: memcached
     image: memcached:alpine
-    container_name: kirby-memcached
     networks:
       - internal
-
+    restart: unless-stopped
+  redis:
+    image: redis
+    networks:
+      - internal
+    ports:
+      - "6380:6379"
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    networks:
+      - internal
+    ports:
+      - "3316:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    restart: unless-stopped
   mailhog:
+    container_name: mailhog
     image: mailhog/mailhog:latest
-    container_name: kirby-mailhog
     ports:
       - "8025:8025"
     networks:
       - internal
-
+    restart: unless-stopped
   traefik:
-    image: traefik:latest
-    restart: always
+    container_name: traefik
+    image: traefik:v2.0
+    restart: unless-stopped
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
@@ -33,20 +51,18 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 8082:8082
+      - 8082:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/traefik.toml:/traefik.toml
+      - ./docker/traefik.yml:/etc/traefik.yml
       - acmedata:/acme
-    container_name: traefik
     networks:
       - web
 volumes:
-  acmedata:
+  acmedata: # storage for acme.json from traefik
+  dbdata:  # contains mariadb database
 networks:
   web: # defines the network used to connect to traefik in another container
-    external:
-      name: web
+    name: web
   internal: # defines the network used to connect to all services
-      external:
-        name: internal
+    name: internal
