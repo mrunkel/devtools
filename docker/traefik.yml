@@ -6,9 +6,9 @@ global:
 
 entrypoints:
   web:
-    address: 80
+    address: ":80"
   websecure:
-    address: 443
+    address: ":443"
 # Docker configuration backend
 providers:
   docker:
@@ -22,7 +22,7 @@ api:
   dashboard: true
   debug: true
 log:
-  level: ERROR
+  level: DEBUG
 certificatesResolvers:
   default:
     acme:
@@ -30,7 +30,7 @@ certificatesResolvers:
       # Use the staging server for testing, remove when ready
       caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       storage: acme.json
-      dnsChallege:
+      dnsChallenge:
         provider: route53
         # Needs the following ENVIROMENT VARIABLES: AWS_ACCESS_KEY_ID,
         # AWS_SECRET_ACCESS_KEY, [AWS_REGION], [AWS_HOSTED_ZONE_ID]
