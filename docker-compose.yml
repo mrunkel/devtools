@@ -1,7 +1,7 @@
 version: '3.5'
 
 # this docker compose file creates the various services used across all dev platforms at plusForta, including
-# * traefik (w/Jaeger)
+# * traefik
 # * memcached
 # * redis
 # * mailhog
