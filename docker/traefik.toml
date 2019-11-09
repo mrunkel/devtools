@@ -1,3 +1,5 @@
+#v1 config..
+
 debug = true
 logLevel = "DEBUG"
 defaultEntryPoints = ["https","http"]

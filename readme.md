@@ -30,11 +30,10 @@ Containers wishing to use traefik should connect to the web docker network and s
 the following labels:
 
         labels:
-          - "traefik.enable: true"
-          - "traefik.http.routers.service.rule=Host('service.pfdev.de')"
-          - "traefik.http.routers.service.entrypoints=websecure"
-          - "traefik.http.routers.service.tls.certresolver=default"
-          - "traefik.http.
+          - traefik.enable=true
+          - traefik.http.routers.service.rule=Host("service.pfdev.de")
+          - traefik.http.routers.service.entrypoints=websecure
+          - traefik.http.routers.service.tls.certresolver=default
           
 Traefik will then pass traffic that it receives matching those [rules](https://docs.traefik.io/routing/routers/)
 
