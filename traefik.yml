@@ -16,12 +16,6 @@ providers:
     watch: true
     endpoint: unix:///var/run/docker.sock
     network: web
-# Redirect to https
-http:
-  middlewares:
-    test-redirectscheme:
-      redirectScheme:
-        scheme: https
 # API and dashboard configuration
 api:
   insecure: true

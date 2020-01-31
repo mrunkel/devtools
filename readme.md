@@ -39,13 +39,18 @@ Traefik will then pass traffic that it receives matching those [rules](https://d
 
 The above example directs all requests for https://service.pfdev.de domain to that container on port 443.
 
+The name 'service' in the traefik configuration string should be adjusted for your project.  For example:
+
+```traefik.http.routers.erp.rule=Host("local.aareal-aval.de") || Host("aval.pfdev.de")```
+
+The way to think about this is that you are defining a "router" called erp.  All of the settings for that router
+are prefixed with traefik.http.routers.erp.
+
 Note: You also need to make sure that service.pfdev.de resolves to 127.0.0.1 in or add a local hosts entry.
 
 Caveats: 
 * In order for traefik to function, you will need to configure the .env file with your AWS API Key/Secret.
 * Your container must be in the web network
-
-**All hostnames must be in the pfdev.de domain**
 
 ## About the internal network
 
