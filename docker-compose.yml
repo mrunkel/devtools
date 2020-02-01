@@ -19,9 +19,9 @@ services:
       - internal
     ports:
       - "6380:6379"
-  mariadb:
-    container_name: mariadb
-    image: mariadb
+  mysql:
+    container_name: db
+    image: mysql:8
     networks:
       - internal
     ports:

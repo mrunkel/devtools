@@ -5,7 +5,7 @@ Contains common servers that are shared between the various development projects
 At present it consists of a single docker compose file that starts
 
 * [Traefik](https://traefik.io/)
-* [MariaDB](https://mariadb.org/)
+* [MySQL](https://hub.docker.com/_/mysql)
 * [Redis](https://redis.io/)
 * [memcached](https://memcached.org/)
 * [MailHog](https://github.com/mailhog/MailHog)
@@ -63,12 +63,12 @@ can't access this internal network, therefore we have additionally made availabl
 localhost (127.0.0.1) address.   Usually on a port different than the "standard" port to avoid conflicts
 with any existing services.
  
-## MariaDB
+## MySQL
 
-MariaDB (aka MySQL) is available to other containers at mariadb.internal on port 3306.
+MySQL v8 is available to other containers at db.internal on port 3306.
 From the _host_ system,  port 3316 also reaches the server.  username: root, password: root
 
-## MemcacheD
+## Memcached
 
 MemcacheD is available at memcached.internal on port 11211.  It's available to the host on port 22122.
 
