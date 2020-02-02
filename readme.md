@@ -5,7 +5,7 @@ Contains common servers that are shared between the various development projects
 At present it consists of a single docker compose file that starts
 
 * [Traefik](https://traefik.io/)
-* [MariaDB](https://mariadb.org/)
+* [MySQL](https://hub.docker.com/_/mysql)
 * [Redis](https://redis.io/)
 * [memcached](https://memcached.org/)
 * [MailHog](https://github.com/mailhog/MailHog)
@@ -39,13 +39,18 @@ Traefik will then pass traffic that it receives matching those [rules](https://d
 
 The above example directs all requests for https://service.pfdev.de domain to that container on port 443.
 
+The name 'service' in the traefik configuration string should be adjusted for your project.  For example:
+
+```traefik.http.routers.erp.rule=Host("local.aareal-aval.de") || Host("aval.pfdev.de")```
+
+The way to think about this is that you are defining a "router" called erp.  All of the settings for that router
+are prefixed with traefik.http.routers.erp.
+
 Note: You also need to make sure that service.pfdev.de resolves to 127.0.0.1 in or add a local hosts entry.
 
 Caveats: 
 * In order for traefik to function, you will need to configure the .env file with your AWS API Key/Secret.
 * Your container must be in the web network
-
-**All hostnames must be in the pfdev.de domain**
 
 ## About the internal network
 
@@ -58,12 +63,12 @@ can't access this internal network, therefore we have additionally made availabl
 localhost (127.0.0.1) address.   Usually on a port different than the "standard" port to avoid conflicts
 with any existing services.
  
-## MariaDB
+## MySQL
 
-MariaDB (aka MySQL) is available to other containers at mariadb.internal on port 3306.
+MySQL v8 is available to other containers at db.internal on port 3306.
 From the _host_ system,  port 3316 also reaches the server.  username: root, password: root
 
-## MemcacheD
+## Memcached
 
 MemcacheD is available at memcached.internal on port 11211.  It's available to the host on port 22122.
 
