@@ -29,7 +29,7 @@ certificatesResolvers:
       email: admin@kautionsfrei.de
       # Use the staging server for testing, remove when ready
       #caServer: https://acme-staging-v02.api.letsencrypt.org/directory
-      storage: acme.json
+      storage: /acme/acme.json
       dnsChallenge:
         provider: route53
         # Needs the following ENVIROMENT VARIABLES: AWS_ACCESS_KEY_ID,
