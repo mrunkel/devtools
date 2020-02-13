@@ -22,7 +22,7 @@ api:
   dashboard: true
   debug: true
 log:
-  level: ERROR
+  level: DEBUG
 certificatesResolvers:
   default:
     acme:
