@@ -83,6 +83,11 @@ You can view any received emails on http://localhost:8025
 
 The Redis container provides a redis instance on redis.internal on port 6379.   It is also available on the host on port 6380.
 
+
+## RabbitMq 
+
+RabbitMQ management Plugin is available on the host on port 3200 (username: guest, password: guest).
+
 # Setting up the project docker-compose.yml file
 
 In order to access these services in your project docker-compose.yml, you will need to define the external networks as follows:
