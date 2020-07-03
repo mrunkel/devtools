@@ -40,6 +40,15 @@ services:
     networks:
       - internal
     restart: unless-stopped
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq-messenger
+    ports: 
+      - 3200:15672
+    networks:
+      - internal
+    volumes:
+      - rabbithole:/var/lib/rabbitmq
   traefik:
     container_name: traefik
     image: traefik:v2.1
@@ -68,6 +77,7 @@ services:
 volumes:
   acmedata: # storage for acme.json from traefik
   dbdata:  # contains mariadb database
+  rabbithole: # contains rabbitmq exchanges, queues & messages
 networks:
   web: # defines the network used to connect to traefik in another container
     name: web
