@@ -6,6 +6,7 @@ version: '3.5'
 # * redis
 # * mailhog
 # * mysql
+# * rabbitmq
 services:
   memcached:
     container_name: memcached
