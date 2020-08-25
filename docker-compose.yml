@@ -65,6 +65,23 @@ services:
       - acmedata:/acme
     networks:
       - web
+  errorPage:
+    container_name: errorPage
+    image: nginx
+    restart: unless-stopped
+    volumes:
+      - ./errorPages:/usr/share/nginx/html
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.errorpage.rule=Host(`err-dev.pfdev.de`)
+      - traefik.http.middlewares.errorpage.errors.status=404
+      - traefik.http.middlewares.errorpage.errors.service=serviceError
+      - traefik.http.middlewares.errorpage.errors.query=/{status}.html
+      - traefik.http.services.serviceError.loadbalancer.server.port=80
+      - traefik.http.routers.errorpage.entrypoints=websecure
+      - traefik.http.routers.errorpage.tls.certresolver=default
+    networks:
+      - web
 volumes:
   acmedata: # storage for acme.json from traefik
   dbdata:  # contains mariadb database
