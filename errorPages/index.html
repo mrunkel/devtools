@@ -1,10 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>We're working on it!</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-There is nothing here now.
-</body>
-</html>
+<!-- component -->
+
+<div class="min-h-screen flex items-center">
+    <div class="container mx-auto p-4 flex flex-wrap items-center">
+        <div class="w-full md:w-5/12 text-center p-4">
+            <img src="img/undraw_refreshing_beverage_td3r.svg" alt="Not Found"/>
+        </div>
+        <div class="w-full md:w-7/12 text-center md:text-left p-4">
+            <div class="text-purple text-6xl font-medium">404</div>
+            <div class="text-purple-800 text-xl md:text-3xl font-medium mb-4">
+                Diese Seite ist zur Zeit nicht aufrufbar.
+            </div>
+            <div class="text-purple-800 text-sm mb-8">
+                Unsere Entwickler sind gerade dabei die Seite zu verbessern. Laden Sie die Seite in ein paar Sekunden
+                noch mal neu.
+            </div>
+            <a href="/" class="text-purple border-2 border-purple-600 rounded p-4">Neu laden</a>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .text-purple {
+        color: #6c63ff;
+    }
+
+    .border-purple-600 {
+        border-width: 2px;
+        color: #6c63ff;
+    }
+
+</style>
