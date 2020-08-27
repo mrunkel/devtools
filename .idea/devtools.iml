@@ -5,5 +5,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="tailwindcss" level="application" />
+    <orderEntry type="library" name="tailwindcss" level="application" />
   </component>
 </module>
