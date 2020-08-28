@@ -83,7 +83,8 @@ services:
     image: nginx
     restart: unless-stopped
     volumes:
-      - ./errorPages:/usr/share/nginx/html
+      - ./errorPages/html:/usr/share/nginx/html
+      - ./errorPages/conf:/etc/nginx/conf.d
     labels:
       - traefik.enable=true
       - traefik.http.routers.errorpage.rule=HostRegexp(`{host:.+}`)

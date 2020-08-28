@@ -125,3 +125,4 @@ Temporary Items
 
 # ignore the local .env file
 .env
+/errorPages/node_modules/

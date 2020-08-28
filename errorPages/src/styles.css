@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.text-purple {
+    color: #6c63ff;
+}
+
+.border-purple-600 {
+    border-width: 2px;
+    color: #6c63ff;
+}
+
