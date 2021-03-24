@@ -44,7 +44,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbitmq-messenger
-    ports: 
+    ports:
       - 3200:15672
     networks:
       - internal
