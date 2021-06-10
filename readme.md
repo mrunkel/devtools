@@ -31,26 +31,39 @@ the following labels:
 
         labels:
           - traefik.enable=true
-          - traefik.http.routers.service.rule=Host("service.pfdev.de")
-          - traefik.http.routers.service.entrypoints=websecure
-          - traefik.http.routers.service.tls.certresolver=default
+          - traefik.http.routers.routerName.rule=Host("foo.local.pfdev.de")
+          - traefik.http.routers.routerName.entrypoints=websecure
+          - traefik.http.routers.routerName.tls.certresolver=default
+          - traefik.http.services.serviceName.loadbalancer.server.port=80"
+
           
 Traefik will then pass traffic that it receives matching those [rules](https://docs.traefik.io/routing/routers/)
 
-The above example directs all requests for https://service.pfdev.de domain to that container on port 443.
+The above example directs all requests for https://foo.local.pfdev.de URL to this container on port 80.
 
-The name 'service' in the traefik configuration string should be adjusted for your project.  For example:
+Specifically what we're are doing is creating a traefik "router" that answers all requests on port 443 with
+the hostname of `foo.local.pfdev.de`.  This router is called routerName.   This router will generate SSL certificates
+on demand based on the configuration "default". (This is configured in the traefik.yml file.)
+
+Additionally, we are creating a service called serviceName which will take the requests received by the router and forward
+them to the container on port 80.
+
+`request --->  https to traefik ---> http to container`
+
+The names 'routerName' and 'serviceName' in the labels should be adjusted for your project as they must be unique for the
+traefik instance.  
+
+For example:
 
 ```traefik.http.routers.erp.rule=Host("local.aareal-aval.de") || Host("aval.pfdev.de")```
 
-The way to think about this is that you are defining a "router" called erp.  All of the settings for that router
-are prefixed with traefik.http.routers.erp.
-
 Note: You also need to make sure that service.pfdev.de resolves to 127.0.0.1 in or add a local hosts entry.
+ProTip: *.local.pfdev.de resolves to 127.0.0.1, so any foo.local.pfdev.de domain will automatically resolve to your
+local computer.
 
 Caveats: 
 * In order for traefik to function, you will need to configure the .env file with your AWS API Key/Secret.
-* Your container must be in the web network
+* Your container must be on the web network
 
 ## About the internal network
 
@@ -65,17 +78,29 @@ with any existing services.
  
 ## MySQL
 
-MySQL v8 is available to other containers at db.internal on port 3306.
+MySQL v8 is available to other containers at `db.internal` on port 3306.
 From the _host_ system,  port 3316 also reaches the server.  username: root, password: root
+
+## Adminer
+
+Adminer is a web base MySQL client.  It's accessible at https://db.local.pfdev.de.  Use the following values
+to connect:
+
+| Field | Value |
+|-------|-------|
+| Server | db.internal |
+| Username | root |
+| Password | root |
+| Database | leave blank for all, or put your database name in to start there |
 
 ## Memcached
 
-MemcacheD is available at memcached.internal on port 11211.  It's available to the host on port 22122.
+MemcacheD is available at `memcached.internal` on port 11211 to other containers.  It's available to the host on port 22122.
 
 ## Mailhog
 
-Mailhog is a server that accepts SMTP on port 1025 (host mailhog.internal). 
-You can view any received emails on http://localhost:8025
+Mailhog is a server that accepts SMTP on port 1025 (host `mailhog.internal`). 
+You can view any sent emails on https://mail.local.pfdev.de
 
 **Note:**  You will need to configure your application to use mailhog, it doesn't intercept traffic on it's own.
 
@@ -86,11 +111,12 @@ The Redis container provides a redis instance on redis.internal on port 6379.   
 
 ## RabbitMq 
 
-RabbitMQ management Plugin is available on the host on port 3200 (username: guest, password: guest).
+RabbitMQ web management interface is available at https://mq.local.pfdev.de (username: guest, password: guest).
+For other containers, it's accessible as `rabbitmq-messenger`
 
 # Setting up the project docker-compose.yml file
 
-In order to access these services in your project docker-compose.yml, you will need to define the external networks as follows:
+In order to access these services in your project's docker-compose.yml, you will need to define the external networks as follows:
 
     networks:
       web: # defines the network used to connect to traefik your container

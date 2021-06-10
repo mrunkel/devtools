@@ -21,6 +21,7 @@ services:
       - internal
     ports:
       - "6380:6379"
+    restart: unless-stopped
   mysql:
     container_name: db
     image: mysql:8
@@ -33,27 +34,64 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     restart: unless-stopped
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.adminer.rule=Host("db.local.pfdev.de")
+      - traefik.http.routers.adminer.entrypoints=websecure
+      - traefik.http.routers.adminer.tls.certresolver=default
+      - traefik.http.services.adminer.loadbalancer.server.port=8080
+    networks:
+      - web
+      - internal
   mailhog:
     container_name: mailhog
     image: mailhog/mailhog:latest
-    ports:
-      - "8025:8025"
+    depends_on:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mailhog.rule=Host("mail.local.pfdev.de")
+      - traefik.http.routers.mailhog.entrypoints=websecure
+      - traefik.http.routers.mailhog.tls.certresolver=default
+      - traefik.http.services.mailhog.loadbalancer.server.port=8025
     networks:
+      - web
       - internal
     restart: unless-stopped
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbitmq-messenger
-    ports:
-      - 3200:15672
+    container_name: rabbitmq
+    depends_on:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.rabbitmq.rule=Host("mq.local.pfdev.de")
+      - traefik.http.routers.rabbitmq.entrypoints=websecure
+      - traefik.http.routers.rabbitmq.tls.certresolver=default
+      - traefik.http.services.rabbitmq.loadbalancer.server.port=15672
     networks:
+      - web
       - internal
     volumes:
       - rabbithole:/var/lib/rabbitmq
+    restart: unless-stopped
   traefik:
     container_name: traefik
     image: traefik:v2.1
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
@@ -82,12 +120,14 @@ services:
     container_name: errorPage
     image: nginx
     restart: unless-stopped
+    depends_on:
+      - traefik
     volumes:
       - ./errorPages/html:/usr/share/nginx/html
       - ./errorPages/conf:/etc/nginx/conf.d
     labels:
       - traefik.enable=true
-      - traefik.http.routers.errorpage.rule=HostRegexp(`{host:.+}`)
+      - traefik.http.routers.errorpage.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.errorpage.priority=10
       - traefik.http.routers.errorpage.entrypoints=websecure
       - traefik.http.routers.errorpage.tls.certresolver=default
