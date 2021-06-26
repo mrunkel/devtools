@@ -104,6 +104,9 @@ You can view any sent emails on https://mail.local.pfdev.de
 
 **Note:**  You will need to configure your application to use mailhog, it doesn't intercept traffic on it's own.
 
+For symfony projects, add the following to .env.local
+`MAILER_DSN=smtp://mailhog.internal:1025`
+
 ## Redis
 
 The Redis container provides a redis instance on redis.internal on port 6379.   It is also available on the host on port 6380.
