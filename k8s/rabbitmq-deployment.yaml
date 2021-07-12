@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.22.0 (HEAD)
+    traefik.enable: "true"
+    traefik.http.routers.rabbitmq.entrypoints: websecure
+    traefik.http.routers.rabbitmq.rule: Host("mq.local.pfdev.de")
+    traefik.http.routers.rabbitmq.tls.certresolver: default
+    traefik.http.services.rabbitmq.loadbalancer.server.port: "15672"
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rabbitmq
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: rabbitmq
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.22.0 (HEAD)
+        traefik.enable: "true"
+        traefik.http.routers.rabbitmq.entrypoints: websecure
+        traefik.http.routers.rabbitmq.rule: Host("mq.local.pfdev.de")
+        traefik.http.routers.rabbitmq.tls.certresolver: default
+        traefik.http.services.rabbitmq.loadbalancer.server.port: "15672"
+      creationTimestamp: null
+      labels:
+        io.kompose.network/internal: "true"
+        io.kompose.network/web: "true"
+        io.kompose.service: rabbitmq
+    spec:
+      containers:
+        - image: rabbitmq:3-management
+          name: rabbitmq
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/rabbitmq
+              name: rabbithole
+      hostname: rabbitmq-messenger
+      restartPolicy: Always
+      volumes:
+        - name: rabbithole
+          persistentVolumeClaim:
+            claimName: rabbithole
+status: {}

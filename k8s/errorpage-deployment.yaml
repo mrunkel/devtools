@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.22.0 (HEAD)
+    traefik.enable: "true"
+    traefik.http.middlewares.errorpage.errors.query: /{status}.html
+    traefik.http.middlewares.errorpage.errors.service: serviceError@docker
+    traefik.http.middlewares.errorpage.errors.status: "404"
+    traefik.http.routers.errorpage.entrypoints: websecure
+    traefik.http.routers.errorpage.priority: "10"
+    traefik.http.routers.errorpage.rule: hostregexp(`{host:.+}`)
+    traefik.http.routers.errorpage.tls.certresolver: default
+    traefik.http.services.serviceError.loadbalancer.server.port: "80"
+  creationTimestamp: null
+  labels:
+    io.kompose.service: errorpage
+  name: errorpage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: errorpage
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.22.0 (HEAD)
+        traefik.enable: "true"
+        traefik.http.middlewares.errorpage.errors.query: /{status}.html
+        traefik.http.middlewares.errorpage.errors.service: serviceError@docker
+        traefik.http.middlewares.errorpage.errors.status: "404"
+        traefik.http.routers.errorpage.entrypoints: websecure
+        traefik.http.routers.errorpage.priority: "10"
+        traefik.http.routers.errorpage.rule: hostregexp(`{host:.+}`)
+        traefik.http.routers.errorpage.tls.certresolver: default
+        traefik.http.services.serviceError.loadbalancer.server.port: "80"
+      creationTimestamp: null
+      labels:
+        io.kompose.network/web: "true"
+        io.kompose.service: errorpage
+    spec:
+      containers:
+        - image: nginx
+          name: errorpage
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: errorpage-claim0
+            - mountPath: /etc/nginx/conf.d
+              name: errorpage-claim1
+      restartPolicy: Always
+      volumes:
+        - name: errorpage-claim0
+          persistentVolumeClaim:
+            claimName: errorpage-claim0
+        - name: errorpage-claim1
+          persistentVolumeClaim:
+            claimName: errorpage-claim1
+status: {}

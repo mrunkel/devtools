@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.22.0 (HEAD)
+    traefik.enable: "true"
+    traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+    traefik.http.routers.http-catchall.entrypoints: web
+    traefik.http.routers.http-catchall.middlewares: redirect-to-https@docker
+    traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)
+    traefik.http.routers.https-catchall.entrypoints: websecure
+    traefik.http.routers.https-catchall.middlewares: errorpage@docker
+    traefik.http.routers.https-catchall.rule: hostregexp(`{host:.+}`)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: traefik
+  name: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: traefik
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.22.0 (HEAD)
+        traefik.enable: "true"
+        traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+        traefik.http.routers.http-catchall.entrypoints: web
+        traefik.http.routers.http-catchall.middlewares: redirect-to-https@docker
+        traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)
+        traefik.http.routers.https-catchall.entrypoints: websecure
+        traefik.http.routers.https-catchall.middlewares: errorpage@docker
+        traefik.http.routers.https-catchall.rule: hostregexp(`{host:.+}`)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/web: "true"
+        io.kompose.service: traefik
+    spec:
+      containers:
+        - env:
+            - name: AWS_ACCESS_KEY_ID
+            - name: AWS_REGION
+              value: eu-central-1
+            - name: AWS_SECRET_ACCESS_KEY
+          image: traefik:v2.1
+          name: traefik
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+            - containerPort: 8080
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: traefik-claim0
+            - mountPath: /etc/traefik/traefik.yml
+              name: traefik-claim1
+            - mountPath: /acme
+              name: acmedata
+      restartPolicy: Always
+      volumes:
+        - name: traefik-claim0
+          persistentVolumeClaim:
+            claimName: traefik-claim0
+        - name: traefik-claim1
+          persistentVolumeClaim:
+            claimName: traefik-claim1
+        - name: acmedata
+          persistentVolumeClaim:
+            claimName: acmedata
+status: {}
