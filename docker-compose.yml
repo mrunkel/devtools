@@ -11,6 +11,8 @@ services:
   memcached:
     container_name: memcached
     image: memcached:alpine
+    ports:
+      - 11211:11211
     networks:
       - internal
     restart: unless-stopped
@@ -55,6 +57,8 @@ services:
     image: mailhog/mailhog:latest
     depends_on:
       - traefik
+    ports:
+      - 1025:1025
     labels:
       - traefik.enable=true
       - traefik.http.routers.mailhog.rule=Host("mail.local.pfdev.de")
