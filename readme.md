@@ -99,13 +99,16 @@ MemcacheD is available at `memcached.internal` on port 11211 to other containers
 
 ## Mailhog
 
-Mailhog is a server that accepts SMTP on port 1025 (host `mailhog.internal`). 
+Mailhog is a server that accepts SMTP on port 1025 (host `mailhog.internal` or `localhost`). 
 You can view any sent emails on https://mail.local.pfdev.de
 
 **Note:**  You will need to configure your application to use mailhog, it doesn't intercept traffic on it's own.
 
-For symfony projects, add the following to .env.local
+For docker based symfony projects, add the following to .env.local
 `MAILER_DSN=smtp://mailhog.internal:1025`
+
+For non-docker based symfony projects, add the following:
+`MAILER_DSN=stmp://localhost:1025`
 
 ## Redis
 
