@@ -25,6 +25,7 @@ services:
       - "6380:6379"
     restart: unless-stopped
   mysql:
+    platform: linux/x86_64
     container_name: db
     image: mysql:8
     networks:
@@ -53,6 +54,7 @@ services:
       - web
       - internal
   mailhog:
+    platform: linux/x86_64
     container_name: mailhog
     image: mailhog/mailhog:latest
     depends_on:
