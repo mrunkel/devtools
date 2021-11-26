@@ -11,6 +11,8 @@ services:
   memcached:
     container_name: memcached
     image: memcached:alpine
+    ports:
+      - 11211:11211
     networks:
       - internal
     restart: unless-stopped
@@ -23,6 +25,7 @@ services:
       - "6380:6379"
     restart: unless-stopped
   mysql:
+    platform: linux/x86_64
     container_name: db
     image: mysql:8
     networks:
@@ -51,6 +54,7 @@ services:
       - web
       - internal
   mailhog:
+    platform: linux/x86_64
     container_name: mailhog
     image: mailhog/mailhog:latest
     depends_on:
@@ -92,8 +96,8 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-file: 5
-        max-size: 10m
+        max-file: "5"
+        max-size: "10m"
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
